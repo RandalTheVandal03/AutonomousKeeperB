@@ -1,6 +1,8 @@
 import cv2
 
 #make object for video capture
+print("Possibe Cameras:")
+print(len(cv2.VideoCapture(i).isOpened() for i in range(10)))
 capture = cv2.VideoCapture(0)
 
 #check if camera opened
