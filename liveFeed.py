@@ -1,28 +1,28 @@
 import cv2
+from picamera2 import Picamera2
 
-#make object for video capture
-print("Possibe Cameras:")
-for i in range (10):
-    print(cv2.VideoCapture(i).getBackendName())
-    print(cv2.VideoCapture(i).isOpened())
+# Identify the camera index (optional, modify if needed)
+camera_index = 0  # Assuming the camera is at index 0
 
-capture = cv2.VideoCapture(0)
+# Initialize the PiCamera2 object
+picam2 = Picamera2()
 
-#check if camera opened
-if not capture.isOpened():
-    print("Error camera is not working!")
+# Configure the camera for preview
+config = picam2.create_preview_configuration(main={"format": "RGB888", "size": (640, 480)})
+picam2.configure(config)
+picam2.start()
 
 while True:
-    #captuer frames
-    ret, frame = capture.read()
+    # Capture a frame from the camera
+    frame = picam2.capture_array()
 
-    if not ret:
-        print("Cant receive frames. stream ended?... Exiting")
-        break
-    
-    cv2.imshow('Live Feed', frame)
+    # Display the frame using OpenCV
+    cv2.imshow("PiCamera2 Feed", frame)
 
-    if cv2.waitKey(1) == ord('q'):
+    # Check for user input to quit
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-capture.release()
+
+# Stop the camera and close windows
+picam2.stop()
 cv2.destroyAllWindows()
